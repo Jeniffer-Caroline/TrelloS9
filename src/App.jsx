@@ -5,6 +5,7 @@ function App() {
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [imagem, setImagem] = useState(null);
+  const [data, setData] = useState('');
 
 
   return (
@@ -24,6 +25,15 @@ function App() {
           type="text"
           id="imagem"
           onChange={(e) => setImagem(e.target.value)}
+        />
+
+        <h3>Data de publicação</h3>
+        <label htmlFor="data"></label>
+        <input
+          type="date"
+          id="data"
+          value={data}
+          onChange={(e) => setData(e.target.value)}
         />
         <button type="submit">Enviar</button>
       </form>
