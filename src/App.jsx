@@ -6,6 +6,7 @@ function App() {
   const [descricao, setDescricao] = useState('');
   const [imagem, setImagem] = useState(null);
   const [data, setData] = useState('');
+  const [categoria, setCategoria] = useState('');
 
 
   return (
@@ -35,6 +36,16 @@ function App() {
           value={data}
           onChange={(e) => setData(e.target.value)}
         />
+
+
+        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} name="" id="categoria">
+          <option value="">Selecione uma categoria</option>
+          <option value="artigo">Artigo</option>
+          <option value="noticia">Notícia</option>
+          <option value="tutorial">Tutorial</option>
+          <option value="entrevista">Entrevista</option>
+          <option value="outro">Outro</option>
+        </select>
         <button type="submit">Enviar</button>
       </form>
     </section>
