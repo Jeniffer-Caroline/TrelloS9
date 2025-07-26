@@ -1,13 +1,23 @@
-import React from 'react';  
+import React, { useEffect } from 'react';  
 import { useState } from 'react';
 import './App.css';
 import {ToastContainer, toast} from 'react-toastify';
+
 function App() {
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [imagem, setImagem] = useState(null);
   const [data, setData] = useState('');
   const [categoria, setCategoria] = useState('');
+ 
+  const [posts, setPosts] = useState('');
+
+  useEffect(() => {
+  const storedPosts = localStorage.getItem('posts');
+  if (storedPosts) {
+    setPosts(JSON.parse(storedPosts));
+  }
+}, []);
 
 const handleSubmit= (e) => {
     e.preventDefault();
@@ -23,10 +33,21 @@ const handleSubmit= (e) => {
 
     return;
   }
-  alert('Post criado com sucesso!');
-  };
 
-  return (
+  const novoPost = [
+    ...posts, novoPost];
+    setPosts(novoPost);
+    localStorage.setItem('posts', JSON.stringify(novoPost));
+  alert('Post criado com sucesso!');
+  
+  setTitulo('');
+  setDescricao('');
+  setImagem('');
+  setData('');
+  setCategoria('');
+};
+
+return (
     <section className="container"> 
       <form action="" onSubmit={handleSubmit}>
         <h3>Novo Post</h3>
@@ -76,7 +97,7 @@ const handleSubmit= (e) => {
         <button type="submit">Enviar</button>
       </form>
     </section>
-  )
+  );
 }
 
 export default App
