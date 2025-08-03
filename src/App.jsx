@@ -11,6 +11,7 @@ function App() {
   const [data, setData] = useState('');
   const [categoria, setCategoria] = useState('');
   const [posts, setPosts] = useState([
+
     {
       id: 1,
       titulo: "Inteligência Artificial no Dia a Dia",
@@ -132,6 +133,8 @@ return (
         <button type="submit">Enviar</button>
       </form>
       <PostList posts={posts} />
+     
+   
     </section>
 
   </>
