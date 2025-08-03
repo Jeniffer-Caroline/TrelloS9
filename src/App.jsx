@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';  
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-import {ToastContainer, toast} from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import Post from './Post';
+import PostList from './PostList';
 
 function App() {
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [imagem, setImagem] = useState(null);
+  const [imagem, setImagem] = useState('');
   const [data, setData] = useState('');
   const [categoria, setCategoria] = useState('');
- 
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -31,45 +31,61 @@ function App() {
     }
   ]);
 
-localStorage.setItem("posts", JSON.stringify(posts));
-
+  // Carrega posts do localStorage ao iniciar
   useEffect(() => {
-  const storedPosts = localStorage.getItem('posts');
-  if (storedPosts) {
-    setPosts(JSON.parse(storedPosts));
-  }
-}, []);
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    }
+  }, []);
 
-const handleSubmit= (e) => {
+  // Salva posts no localStorage sempre que posts mudar
+  useEffect(() => {
+    localStorage.setItem('posts', JSON.stringify(posts));
+  }, [posts]);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-  
-  const today = new Date();
-  const selectedDate = new Date(data);
 
-  today.setHours(0, 0, 0, 0);
-  selectedDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    const selectedDate = new Date(data);
 
-  if (selectedDate < today) {
-    alert('A data não pode ser no passado');
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
 
-    return;
-  }
+    if (selectedDate < today) {
+      alert('A data não pode ser no passado');
+      return;
+    }
 
-  const novoPost = [
-    ...posts, novoPost];
-    setPosts(novoPost);
-    localStorage.setItem('posts', JSON.stringify(novoPost));
-  alert('Post criado com sucesso!');
-  
-  setTitulo('');
-  setDescricao('');
-  setImagem('');
-  setData('');
-  setCategoria('');
-};
+    const novoPost = {
+      id: Date.now(),
+      titulo,
+      descricao,
+      capa: imagem,
+      data,
+      tipo: categoria.charAt(0).toUpperCase() + categoria.slice(1)
+    };
 
+    const novosPosts = [...posts, novoPost];
+    setPosts(novosPosts);
+    toast.success('Post criado com sucesso!');
+
+    setTitulo('');
+    setDescricao('');
+    setImagem('');
+    setData('');
+    setCategoria('');
+  };
 return (
-    <section className="container"> 
+  <>
+
+  <ToastContainer />
+  
+  
+
+  
+    <section className="container">
       <form action="" onSubmit={handleSubmit}>
         <h3>Novo Post</h3>
         <label htmlFor="titulo">Título</label>
@@ -103,11 +119,9 @@ return (
           id="data"
           value={data}
           onChange={(e) => setData(e.target.value)} required
-  
         />
 
-
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} name="" id="categoria" required>
+        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} id="categoria" required>
           <option value="">Selecione uma categoria</option>
           <option value="artigo">Artigo</option>
           <option value="noticia">Notícia</option>
@@ -117,8 +131,11 @@ return (
         </select>
         <button type="submit">Enviar</button>
       </form>
+      <PostList posts={posts} />
     </section>
-  );
-}
 
+  </>
+)
+}
 export default App
+
