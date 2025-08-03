@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { ToastContainer, toast } from 'react-toastify';
-import Post from './Post';
 import PostList from './PostList';
+//import axios from 'axios';
 
 function App() {
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [imagem, setImagem] = useState('');
+  const [imagemUrl, setImagemUrl] = useState('');
   const [data, setData] = useState('');
   const [categoria, setCategoria] = useState('');
   const [posts, setPosts] = useState([
-
     {
       id: 1,
       titulo: "Inteligência Artificial no Dia a Dia",
@@ -63,7 +62,7 @@ function App() {
       id: Date.now(),
       titulo,
       descricao,
-      capa: imagem,
+      capa: imagemUrl,
       data,
       tipo: categoria.charAt(0).toUpperCase() + categoria.slice(1)
     };
@@ -74,71 +73,72 @@ function App() {
 
     setTitulo('');
     setDescricao('');
-    setImagem('');
+    setImagemUrl('');
     setData('');
     setCategoria('');
   };
-return (
-  <>
 
-  <ToastContainer />
-  
-  
+  // Função para deletar post
+  const handleDelete = (id) => {
+    const updatedPosts = posts.filter((post) => post.id !== id);
+    setPosts(updatedPosts);
+    localStorage.setItem('posts', JSON.stringify(updatedPosts));
+  };
 
-  
-    <section className="container">
-      <form action="" onSubmit={handleSubmit}>
-        <h3>Novo Post</h3>
-        <label htmlFor="titulo">Título</label>
-        <input type="text" value={titulo} onChange={(e) => setTitulo(e.target.value)} id="titulo" required />
+  return (
+    <div>
+      <ToastContainer />
+      <section className="container">
+        <form action="" onSubmit={handleSubmit}>
+          <h3>Novo Post</h3>
+          <label htmlFor="titulo">Título</label>
+          <input type="text" value={titulo} onChange={(e) => setTitulo(e.target.value)} id="titulo" required />
 
-        <label htmlFor="descricao">Descrição</label>
-        <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} id="descricao" required />
+          <label htmlFor="descricao">Descrição</label>
+          <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} id="descricao" required />
 
-        <h3>URL da imagem de capa</h3>
-        <label htmlFor="imagem">Imagem</label>
-        <input
-          value={imagem || ''}
-          type="text"
-          id="imagem"
-          onChange={(e) => {
-            const valor = e.target.value;
-            if (valor.startsWith('http://') || valor.startsWith('https://')) {
-              setImagem(valor);
-              toast.success('URL aceita!');
-            } else {
-              setImagem('');
-              toast.error('URL inválida!');
-            }
-          }}
-        />
+         <h3>URL da imagem de capa</h3>
+<label htmlFor="imagem-url">Imagem URL: </label>
+<input
+  type="text"
+  id="imagem-url"
+  value={imagemUrl}
+  onChange={(e) => {
+    const valor = e.target.value;
+    if (valor.startsWith('http://') || valor.startsWith('https://')) {
+      setImagemUrl(valor);
+    } else {
+      setImagemUrl('');
+      toast.error('URL inválida! Somente HTTP ou HTTPS são permitidos.');
+    }
+  }}
+  placeholder='Cole a URL da imagem de capa (somente HTTP ou HTTPS)'
+  required
+/>
+          <h3>Data de publicação</h3>
+          <label htmlFor="data"></label>
+          <input
+            type="date"
+            id="data"
+            value={data}
+            onChange={(e) => setData(e.target.value)} required
+          />
 
-        <h3>Data de publicação</h3>
-        <label htmlFor="data"></label>
-        <input
-          type="date"
-          id="data"
-          value={data}
-          onChange={(e) => setData(e.target.value)} required
-        />
-
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} id="categoria" required>
-          <option value="">Selecione uma categoria</option>
-          <option value="artigo">Artigo</option>
-          <option value="noticia">Notícia</option>
-          <option value="tutorial">Tutorial</option>
-          <option value="entrevista">Entrevista</option>
-          <option value="outro">Outro</option>
-        </select>
-        <button type="submit">Enviar</button>
-      </form>
-      <PostList posts={posts} />
-     
-   
-    </section>
-
-  </>
-)
+          <select value={categoria} onChange={(e) => setCategoria(e.target.value)} id="categoria" required>
+            <option value="">Selecione uma categoria</option>
+            <option value="artigo">Artigo</option>
+            <option value="noticia">Notícia</option>
+            <option value="tutorial">Tutorial</option>
+            <option value="entrevista">Entrevista</option>
+            <option value="outro">Outro</option>
+          </select>
+          
+          <button type="submit">Enviar</button>
+        </form>
+        <PostList posts={posts} handleDelete={handleDelete} />
+      </section>
+    </div>
+  );
 }
-export default App
 
+export default App;
